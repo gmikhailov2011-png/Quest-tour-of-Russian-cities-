@@ -1,0 +1,2400 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Квест-тур по городам России</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body {
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                color: #333;
+                min-height: 100vh;
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            #main-page {
+                display: block;
+            }
+
+            .city-page {
+                display: none;
+            }
+
+            .city-page.active {
+                display: block;
+            }
+
+            header {
+                text-align: center;
+                padding: 40px 20px;
+                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                    url("https://images.unsplash.com/photo-1547448415-9eb5b8c7d14e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+                background-size: cover;
+                background-position: center;
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            h1 {
+                font-size: 3rem;
+                margin-bottom: 15px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+
+            .subtitle {
+                font-size: 1.3rem;
+                max-width: 800px;
+                margin: 0 auto;
+                font-weight: 300;
+            }
+
+            .intro {
+                text-align: center;
+                margin-bottom: 40px;
+                padding: 20px;
+            }
+
+            .intro h2 {
+                color: #2c3e50;
+                margin-bottom: 15px;
+                font-size: 2rem;
+            }
+
+            .intro p {
+                font-size: 1.1rem;
+                max-width: 800px;
+                margin: 0 auto;
+                color: #555;
+            }
+
+            .cities-section {
+                margin-bottom: 50px;
+            }
+
+            .cities-section h2 {
+                text-align: center;
+                margin-bottom: 30px;
+                color: #2c3e50;
+                font-size: 2rem;
+            }
+
+            .cities-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 25px;
+                margin-bottom: 40px;
+            }
+
+            .city-card {
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.3s,
+                    box-shadow 0.3s;
+            }
+
+            .city-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .city-content {
+                padding: 20px;
+            }
+
+            .city-content h3 {
+                margin-bottom: 10px;
+                color: #2c3e50;
+            }
+
+            .city-content p {
+                color: #666;
+                margin-bottom: 15px;
+                font-size: 0.95rem;
+            }
+
+            .btn {
+                display: inline-block;
+                background: #3498db;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: background 0.3s;
+                cursor: pointer;
+                border: none;
+                font-family: inherit;
+            }
+
+            .btn:hover {
+                background: #2980b9;
+            }
+
+            .city-header {
+                text-align: center;
+                margin: 30px 0;
+                padding-bottom: 15px;
+                border-bottom: 3px solid #3498db;
+            }
+
+            .city-header h1 {
+                color: #2c3e50;
+                font-size: 2.5rem;
+                text-shadow: none;
+            }
+
+            .city-content-page {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                margin-bottom: 30px;
+            }
+
+            .city-content-page h2 {
+                color: #2980b9;
+                margin: 30px 0 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #ecf0f1;
+                font-size: 1.8rem;
+            }
+
+            .city-content-page p {
+                margin-bottom: 20px;
+                font-size: 1.1rem;
+                text-align: justify;
+            }
+
+            .city-content-page ul {
+                margin-left: 20px;
+                margin-bottom: 20px;
+            }
+
+            .city-content-page li {
+                margin-bottom: 15px;
+                padding-left: 5px;
+                list-style-type: disc;
+            }
+
+            .city-content-page img {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                margin: 20px auto;
+                border-radius: 8px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease;
+            }
+
+            .city-content-page img:hover {
+                transform: scale(1.02);
+            }
+
+            .image-container {
+                position: relative;
+                margin: 25px 0;
+            }
+
+            .image-caption {
+                text-align: center;
+                font-style: italic;
+                color: #7f8c8d;
+                margin-top: 8px;
+                font-size: 0.95rem;
+            }
+
+            .highlight {
+                background-color: #e8f4fc;
+                padding: 2px 5px;
+                border-radius: 3px;
+            }
+
+            .navigation {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin: 20px 0;
+                flex-wrap: wrap;
+            }
+
+            .nav-btn {
+                padding: 10px 20px;
+                background: #3498db;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background 0.3s;
+            }
+
+            .nav-btn:hover {
+                background: #2980b9;
+            }
+
+            #quest-page {
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                padding: 30px;
+                margin-top: 30px;
+                display: none;
+            }
+
+            #quest-page.active {
+                display: block;
+            }
+
+            .quest-header {
+                text-align: center;
+                padding: 30px 0;
+                background: linear-gradient(to right, #2c3e50 0%, #3498db 100%);
+                color: white;
+                margin: -30px -30px 30px -30px;
+                border-radius: 0 0 15px 15px;
+            }
+
+            .quest-header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .quest-header p {
+                font-size: 1.2rem;
+                max-width: 700px;
+                margin: 0 auto;
+                opacity: 0.9;
+            }
+
+            .city-selector {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin: 25px 0;
+                flex-wrap: wrap;
+            }
+
+            .city-btn {
+                padding: 15px 25px;
+                background: #ecf0f1;
+                border: none;
+                border-radius: 10px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                color: #2c3e50;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .city-btn:hover {
+                background: #3498db;
+                color: white;
+                transform: translateY(-3px);
+            }
+
+            .city-btn.active {
+                background: #2c3e50;
+                color: white;
+            }
+
+            .quest-info {
+                display: flex;
+                justify-content: space-between;
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .info-item {
+                text-align: center;
+                flex: 1;
+            }
+
+            .info-item i {
+                font-size: 1.8rem;
+                color: #3498db;
+                margin-bottom: 8px;
+            }
+
+            .info-item span {
+                font-weight: bold;
+                color: #2c3e50;
+                font-size: 1.1rem;
+            }
+
+            .city-description {
+                background-color: #f0f8ff;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 25px;
+                border-left: 5px solid #3498db;
+                display: none;
+            }
+
+            .city-description.active {
+                display: block;
+                animation: fadeIn 0.5s ease;
+            }
+
+            .question-container {
+                display: none;
+                animation: fadeIn 0.5s ease;
+            }
+
+            .question-container.active {
+                display: block;
+            }
+
+            .question {
+                background-color: #fff;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+                margin-bottom: 20px;
+                border-left: 5px solid #3498db;
+            }
+
+            .question h2 {
+                color: #2c3e50;
+                margin-bottom: 20px;
+                font-size: 1.4rem;
+                display: flex;
+                align-items: center;
+            }
+
+            .question-number {
+                background-color: #2c3e50;
+                color: white;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                font-weight: bold;
+            }
+
+            .options {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .option {
+                padding: 15px;
+                background-color: #f8f9fa;
+                border: 2px solid #e9ecef;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 1rem;
+            }
+
+            .option:hover {
+                background-color: #e9ecef;
+                transform: translateY(-2px);
+            }
+
+            .option.correct {
+                background-color: #d4edda;
+                border-color: #c3e6cb;
+                color: #155724;
+            }
+
+            .option.incorrect {
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
+                color: #721c24;
+            }
+
+            .quest-navigation {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 25px;
+            }
+
+            .quest-button {
+                padding: 12px 25px;
+                background: linear-gradient(to right, #2c3e50 0%, #3498db 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .quest-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 7px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .quest-button:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .quest-button i {
+                margin-right: 8px;
+            }
+
+            .result-container {
+                display: none;
+                text-align: center;
+                padding: 40px;
+                animation: fadeIn 1s ease;
+            }
+
+            .result-container.active {
+                display: block;
+            }
+
+            .result-icon {
+                font-size: 5rem;
+                color: #3498db;
+                margin-bottom: 20px;
+            }
+
+            .result-title {
+                font-size: 2.2rem;
+                color: #2c3e50;
+                margin-bottom: 20px;
+            }
+
+            .result-score {
+                font-size: 3rem;
+                font-weight: bold;
+                color: #2c3e50;
+                margin: 20px 0;
+            }
+
+            .result-message {
+                font-size: 1.2rem;
+                max-width: 700px;
+                margin: 0 auto 30px;
+                line-height: 1.6;
+            }
+
+            .restart-btn {
+                margin: 0 auto;
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+            .progress-bar {
+                height: 8px;
+                background-color: #e9ecef;
+                border-radius: 4px;
+                margin-bottom: 25px;
+                overflow: hidden;
+            }
+
+            .progress {
+                height: 100%;
+                background: linear-gradient(to right, #2c3e50 0%, #3498db 100%);
+                width: 10%;
+                transition: width 0.5s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .feedback {
+                margin-top: 15px;
+                padding: 15px;
+                border-radius: 8px;
+                display: none;
+            }
+
+            .feedback.correct {
+                background-color: #d4edda;
+                border-left: 5px solid #28a745;
+                color: #155724;
+                display: block;
+            }
+
+            .feedback.incorrect {
+                background-color: #f8d7da;
+                border-left: 5px solid #dc3545;
+                color: #721c24;
+                display: block;
+            }
+
+            .fact {
+                background-color: #fff3cd;
+                border-left: 5px solid #ffc107;
+                color: #856404;
+                padding: 15px;
+                border-radius: 8px;
+                margin-top: 20px;
+                display: none;
+            }
+
+            .fact.show {
+                display: block;
+                animation: fadeIn 0.5s ease;
+            }
+
+            .quest-start {
+                text-align: center;
+                padding: 40px 20px;
+            }
+
+            .quest-start h2 {
+                margin-bottom: 20px;
+                color: #2c3e50;
+            }
+
+            .quest-start p {
+                margin-bottom: 30px;
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+
+            .start-quest-btn {
+                margin: 20px auto;
+                padding: 15px 40px;
+                font-size: 1.2rem;
+            }
+
+            .back-to-main {
+                margin: 20px 0;
+            }
+
+            .quest-button-container {
+                text-align: center;
+                margin: 30px 0;
+            }
+
+            .big-quest-btn {
+                display: inline-block;
+                padding: 20px 50px;
+                font-size: 1.4rem;
+                background: linear-gradient(to right, #2c3e50 0%, #3498db 100%);
+                color: white;
+                text-decoration: none;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .big-quest-btn:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 15px;
+                }
+
+                h1 {
+                    font-size: 2.2rem;
+                }
+
+                .city-header h1 {
+                    font-size: 2rem;
+                }
+
+                .subtitle {
+                    font-size: 1.1rem;
+                }
+
+                .cities-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .city-content-page {
+                    padding: 20px;
+                }
+
+                .city-content-page h2 {
+                    font-size: 1.5rem;
+                }
+
+                .quest-header h1 {
+                    font-size: 2rem;
+                }
+
+                .city-selector {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .city-btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .quest-info {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .question {
+                    padding: 20px;
+                }
+
+                .quest-navigation {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .quest-button {
+                    width: 100%;
+                }
+
+                .big-quest-btn {
+                    width: 100%;
+                    padding: 15px 30px;
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id="main-page" class="city-page active">
+                <header>
+                    <h1>Квест-тур по городам России</h1>
+                    <p class="subtitle">
+                        Откройте для себя удивительные маршруты по самым красивым и историческим городам нашей страны
+                    </p>
+                </header>
+
+                <section class="intro">
+                    <h2>Путешествуйте с нами</h2>
+                    <p>
+                        Россия - страна с богатейшей историей, уникальной архитектурой и разнообразной природой.
+                        Выберите город из списка ниже и начните своё путешествие прямо сейчас.
+                    </p>
+                </section>
+
+                <section class="cities-section">
+                    <h2>Города России</h2>
+                    <div class="cities-grid">
+                        <div class="city-card">
+                            <div class="city-content">
+                                <h3>Великий Устюг</h3>
+                                <p>
+                                    Родина Деда Мороза и один из самых атмосферных городов Русского Севера с богатой
+                                    историей и уникальной архитектурой.
+                                </p>
+                                <button class="btn" onclick="showCity('velikiy-ustyug')">Подробнее</button>
+                            </div>
+                        </div>
+                        <div class="city-card">
+                            <div class="city-content">
+                                <h3>Пенза</h3>
+                                <p>
+                                    Город с богатой историей, известный своими музеями, театрами и красивыми парками.
+                                    Основан в 1663 году как крепость на юго-восточной окраине государства.
+                                </p>
+                                <button class="btn" onclick="showCity('penza')">Подробнее</button>
+                            </div>
+                        </div>
+                        <div class="city-card">
+                            <div class="city-content">
+                                <h3>Чита</h3>
+                                <p>
+                                    Столица Забайкальского края, расположенная в Восточной Сибири. Известна своей
+                                    исторической архитектурой и близостью к уникальным природным достопримечательностям.
+                                </p>
+                                <button class="btn" onclick="showCity('chita')">Подробнее</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quest-button-container">
+                        <a href="javascript:void(0)" onclick="startQuestFromMain()" class="big-quest-btn">
+                            Начать образовательный квест
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+            <div id="velikiy-ustyug" class="city-page">
+                <div class="city-content-page">
+                    <div class="city-header">
+                        <h1>Великий Устюг</h1>
+                    </div>
+
+                    <p>
+                        <span class="highlight">Великий Устюг</span> — один из древнейших городов Русского Севера,
+                        расположенный на северо-востоке Вологодской области, в месте слияния рек Сухоны и Юга. Он
+                        известен как «родина Деда Мороза», но его история и культурное наследие выходят далеко за рамки
+                        этого образа.
+                    </p>
+                    <h2>Герб города</h2>
+                    <img
+                        src="images/%D0%93%D0%B5%D1%80%D0%B1%20%D0%92%D0%B5%D0%BB%D0%B8%D0%BA%D0%BE%D0%B3%D0%BE%20%D0%A3%D1%81%D1%82%D1%8E%D0%B3%D0%B0.webp"
+                        width="500" />
+
+                    <h2>История</h2>
+                    <ul>
+                        <li>
+                            Город возник в XII веке как форпост ростово-суздальских князей. Первое упоминание о нём
+                            относится к 1212 году в связи с основанием Михайло-Архангельского монастыря — первого на
+                            Русском Севере. В конце XIV века Великий Устюг окончательно закрепился за Великим княжеством
+                            Московским.
+                        </li>
+                        <li>
+                            В XV–XVI веках город играл важную роль в присоединении к Москве северных земель (югорских,
+                            пермских, вятских, двинских). К середины XVI века благодаря торговому пути по Сухоне и
+                            Северной Двине к Белому морю Великий Устюг стал крупным торговым и ремесленным центром. Иван
+                            IV включил его в число опричных городов, дававших деньги «на государев обиход», и с конца
+                            XVI века город официально стал именоваться Устюгом Великим.
+                        </li>
+                        <li>
+                            В XVII веке город достиг расцвета как часть Северо-Двинского водного пути. Практически вся
+                            внешняя торговля Русского государства осуществлялась через Архангельск по Двине. Однако в
+                            XVIII веке после перемещения торговых путей (в том числе из-за основания Санкт-Петербурга)
+                            Великий Устюг утратил своё торгово-транспортное значение.
+                        </li>
+                        <li>
+                            В XX веке началась работа по восстановлению памятников архитектуры, многие из которых сейчас
+                            включены в список культурного наследия России. Проект «Великий Устюг — родина Деда Мороза»
+                            (1998 год) превратил город в популярное туристическое направление.
+                        </li>
+                    </ul>
+
+                    <h2>Достопримечательности</h2>
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%A1%D0%BE%D0%B1%D0%BE%D1%80%D0%BD%D0%BE%D0%B5%20%D0%B4%D0%B2%D0%BE%D1%80%D0%B8%D1%89%D0%B5.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Соборное дворище</strong> — главный архитектурный комплекс города. Расположен на
+                            набережной Сухоны и включает несколько церквей XVII–XIX веков и хозяйственные здания.
+                            Центральный храм — Успенский собор (1639–1658 гг.), построенный по образцу кремлёвского.
+                            Летом можно подняться на 50-метровую колокольню собор — одну из лучших обзорных точек
+                            города. К комплексу также относятся собор Прокопия Праведного (покровителя города), церковь
+                            Иоанна Устюжского, одноглавая церковь Власия Севастийского и Архиерейский дом XVIII века.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%94%D1%8B%D0%BC%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%20%D1%81%D0%BB%D0%BE%D0%B1%D0%BE%D0%B4%D0%B0.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Дымковская слобода</strong> — район на правом берегу Сухоны с храмовым ансамблем
+                            XVIII века: церквями Дмитрия Солунского и Сергия Радонежского. Отсюда открывается панорамный
+                            вид на Великий Устюг и Соборное дворище.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%92%D0%BE%D1%82%D1%87%D0%B8%D0%BD%D0%B0%20%D0%94%D0%B5%D0%B4%D0%B0%20%D0%9C%D0%BE%D1%80%D0%BE%D0%B7%D0%B0.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Вотчина Деда Мороза</strong> — тематический парк в 12 километрах от города. Включает
+                            дом Деда Мороза, кузницу, зоосад, тропу сказок, ледник и зимний сад. Зимой здесь можно
+                            покататься на оленях и «ватрушках», посетить новогодние спектакли.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%A2%D1%80%D0%BE%D0%B8%D1%86%D0%B5-%D0%93%D0%BB%D0%B5%D0%B4%D0%B5%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BC%D0%BE%D0%BD%D0%B0%D1%81%D1%82%D1%8B%D1%80%D1%8C.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Троице-Гледенский монастырь</strong> — один из древнейших на Русском Севере,
+                            расположен в деревне Морозовица в 13 километрах от города. Основан в конце XII века, в XVIII
+                            веке отстроен в камне. Главная достопримечательность — пятиярусный резной иконостас в стиле
+                            барокко в Троицком соборе.
+                        </p>
+                    </div>
+
+                    <h2>Музеи</h2>
+                    <ul>
+                        <li>
+                            <strong>Музей истории и культуры Великого Устюга</strong> (ул. Набережная, 64) расположен в
+                            доме купца Усова. Экспозиция охватывает историю города с XII по XX век, включает
+                            археологические находки, оружие, иконы и изделия местных промыслов.
+                            <p>
+                                Больше узнать о музее можно
+                                <a
+                                    href="https://ustyug-museum.ru/museums/muzey-istorii-i-kultury-velikogo-ustyuga/"
+                                    target="_blank"
+                                    >здесь</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей новогодней и рождественской игрушки</strong> (пл. Коммуны, 7) находится в
+                            церкви Жён-Мироносиц. В коллекции — ёлочные украшения разных эпох, включая фигурки из ваты,
+                            шишки-ракеты и белочек на прищепках.
+                            <p>
+                                Больше узнать о музее можно
+                                <a
+                                    href="https://ustyug-museum.ru/museums/muzey-novogodney-i-rozhdestvenskoy-igrushki/"
+                                    target="_blank"
+                                    >здесь</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей древнерусского искусства</strong> (Советский пр., 86) расположен в церкви
+                            Вознесения (1648 г.). Здесь представлены шесть иконостасов XVIII века, устюжская иконопись
+                            XV–XVIII веков, лицевое шитьё и редкие книги.
+                            <p>
+                                Больше узнать о музее можно
+                                <a
+                                    href="https://ustyug-museum.ru/museums/muzey-drevnerusskogo-iskusstva/"
+                                    target="_blank"
+                                    >здесь</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей этнографии</strong> (ул. Набережная, 66) находится в Никольской церкви.
+                            Экспозиция посвящена культуре, ремёслам и быту устюжан, включает образцы шемогодской
+                            берестяной резьбы, чернения по серебру и других промыслов.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://ustyug-museum.ru/museums/muzey-etnografii/" target="_blank">здесь</a>
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей природы края</strong> (ул. Набережная, 65) расположен во флигеле дома Усова.
+                            Интерактивные экспозиции знакомят с флорой и фауной Вологодской области, а также с
+                            палеонтологическими находками.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://ustyug-museum.ru/museums/muzey-prirody-kraya/" target="_blank"
+                                    >здесь</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Депозитарий</strong> (Советский пр., 58) — открытое фондохранилище с коллекцией
+                            изразцов, прялок, изделий из бересты и других экспонатов.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://ustyug-museum.ru/museums/depozitariy/" target="_blank">здесь</a>
+                            </p>
+                        </li>
+                    </ul>
+
+                    <div class="navigation">
+                        <button class="nav-btn" onclick="showMain()">На главную</button>
+                        <button class="nav-btn" onclick="startQuest('ustyug')">Начать квест по городу</button>
+                        <button class="nav-btn" onclick="showCity('penza')">Следующий город: Пенза</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="penza" class="city-page">
+                <div class="city-content-page">
+                    <div class="city-header">
+                        <h1>Пенза</h1>
+                    </div>
+
+                    <p>
+                        <span class="highlight">Пенза</span> — город в России, основанный в 1663 году по указу царя
+                        Алексея Михайловича как крепость на юго-восточной окраине Русского государства. Расположен у
+                        слияния рек Пензы и Суры, в пределах Приволжской возвышенности. В 2021 году удостоен почётного
+                        звания «Город трудовой доблести».
+                    </p>
+                    <h2>Герб города</h2>
+                    <img src="images/%D0%93%D0%B5%D1%80%D0%B1%20%D0%9F%D0%B5%D0%BD%D0%B7%D1%8B.png" width="500" />
+
+                    <h2>Краткая история</h2>
+                    <ul>
+                        <li>
+                            В 1670 году Пенза была занята без боя повстанцами во время восстания Разина. В 1680 году
+                            посад и слободы были сожжены ногайцами. В 1708 году по указу Петра I город стал центром
+                            Пензенского уезда Казанской губернии, а с 1719 года — центром Пензенской провинции. В 1780
+                            году Пенза стала центром Пензенского наместничества, а в 1796 году — Пензенской губернии. В
+                            1801 году город вновь стал губернским центром и сохранял этот статус до 1928 года.
+                        </li>
+                        <li>
+                            В 1874 году открылось железнодорожное движение по ветке Моршанск — Сызрань, что
+                            способствовало экономическому развитию. В 1918 году город был захвачен Чехословацким
+                            корпусом во время Гражданской войны, но чехи быстро покинули его. В 1939 году Пенза стала
+                            областным центром.
+                        </li>
+                        <li>
+                            В годы Великой Отечественной войны в город были эвакуированы многие предприятия с запада
+                            страны, что положило начало индустриальному росту. В 1943 году открылся индустриальный
+                            институт (ныне — Пензенский государственный университет).
+                        </li>
+                    </ul>
+
+                    <h2>Достопримечательности</h2>
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9C%D0%BE%D1%81%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0.webp"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Московская улица</strong> — главная пешеходная улица города, появившаяся практически
+                            одновременно с основанием Пензы. Здесь сохранились купеческие особняки, работают кафе и
+                            сувенирные магазины. На променаде есть арт-объекты, например, исполинский градусник высотой
+                            12,5 метров и уличные часы с кукушкой.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9F%D0%B0%D0%BC%D1%8F%D1%82%D0%BD%D0%B8%D0%BA%20%C2%AB%D0%9F%D0%B5%D0%BD%D0%B7%D1%8F%D0%BA%20%D1%82%D0%BE%D0%BB%D1%81%D1%82%D0%BE%D0%BF%D1%8F%D1%82%D1%8B%D0%B9%C2%BB.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Памятник «Пензяк толстопятый»</strong> — скульптурная композиция на Московской
+                            улице. По легенде, прозвище «пензяк толстопятый» придумал Суворов, потому что
+                            солдаты-пензяки носили носки с двойной пяткой.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9F%D0%B0%D0%BC%D1%8F%D1%82%D0%BD%D0%B8%D0%BA%20%D0%BF%D0%B5%D1%80%D0%B2%D0%BE%D0%BF%D0%BE%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D1%86%D1%83.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Памятник первопоселенцу</strong> — один из главных символов Пензы. Установлен на
+                            высоком берегу Суры в 1980 году. Бронзовые конь-богатырь и воин-пахарь с копьём и плугом
+                            символизируют первых жителей города, которые осваивали земли и защищали границы государства.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9E%D0%B1%D0%BE%D1%80%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%D0%B2%D0%B0%D0%BB.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Оборонительный вал</strong> — одна из главных достопримечательностей города. Насыпан
+                            более 300 лет назад, сейчас представляет собой крутую горку, покрытую газоном. На валу
+                            установлены колокол и пушка, есть смотровые площадки с видом на город.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9D%D0%B0%D0%B1%D0%B5%D1%80%D0%B5%D0%B6%D0%BD%D0%B0%D1%8F%20%D0%A1%D1%83%D1%80%D1%8B.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Набережная Суры</strong> — место для прогулок с пляжной зоной, прогулочными
+                            дорожками, светомузыкальными фонтанами и кафе. Протяжённость набережной — около 4,5
+                            километров.
+                        </p>
+                    </div>
+
+                    <h2>Музеи</h2>
+                    <ul>
+                        <li>
+                            <strong>Пензенский государственный краеведческий музей</strong> (Красная улица, 73) —
+                            основан в 1905 году, открыт для посещения в 1911 году. В музее 7 постоянных выставочных
+                            экспозиций, включая естественнонаучные, археологические, этнографические, художественные и
+                            нумизматические коллекции. Есть палеонтологический отдел с окаменелостями и скелетами
+                            древних животных.
+                            <p>Больше узнать о музее можно <a href="https://km-penza.ru/" target="_blank">здесь</a></p>
+                        </li>
+                        <li>
+                            <strong>Пензенская областная картинная галерея имени К. А. Савицкого</strong> (Советская
+                            улица, 3) — один из старейших художественных музеев России. История началась в 1892 году,
+                            когда губернатор Н. Д. Селиверстов подарил городу свою коллекцию живописи. В фондах галереи
+                            более 14 тысяч экспонатов, включая работы Левитана, Репина, Сурикова, Айвазовского и других
+                            художников.
+                            <p>Больше узнать о музее можно <a href="http://penza.gallery/" target="_blank">здесь</a></p>
+                        </li>
+                        <li>
+                            <strong>Центр театрального искусства «Дом Мейерхольда»</strong> (улица Володарского, 59) —
+                            музей и театр, расположенный в деревянном особняке XIX века, где прошли детские и юношеские
+                            годы режиссёра Всеволода Мейерхольда. В музее можно увидеть подлинную мебель семьи
+                            Мейерхольдов, личные вещи режиссёра, фотографии и документы. В «Театре Доктора Дапертутто»
+                            проходят экспериментальные спектакли.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://dommeyerholda.ru/" target="_blank">здесь</a>
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей народного творчества</strong> (улица Куйбышева, 45) — расположен в старинной
+                            купеческой усадьбе с резным декором, затейливыми наличниками и ажурным крыльцом. Экспозиция
+                            занимает 6 залов и представляет народные промыслы Пензенской губернии: резьбу по дереву,
+                            вышивку, традиционные игрушки.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://km-penza.ru/nashi-muzei/muzej-narodnogo-tvorchestva/" target="_blank"
+                                    >здесь</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей одной картины имени Г. В. Мясникова</strong> (улица Кирова, 11) — уникальный
+                            художественный музей, где в течение 45 минут гостям показывают видеофильм о художнике и
+                            эпохе создания картины, которая заявлена в афише.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="http://penza.gallery/o-muzee/filialy/muzej-odnoj-kartiny.html" target="_blank"
+                                    >здесь</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей-заповедник «Тарханы»</strong> (село Лермонтово, улица Бугор, 1/1) — находится
+                            в усадьбе, где прошли детские и юношеские годы Михаила Лермонтов. Здесь воссоздана
+                            атмосфера, в которой формировалась личность поэта.
+                            <p>Больше узнать о музее можно <a href="https://tarhany.ru/" target="_blank">здесь</a></p>
+                        </li>
+                    </ul>
+
+                    <div class="navigation">
+                        <button class="nav-btn" onclick="showMain()">На главную</button>
+                        <button class="nav-btn" onclick="showCity('velikiy-ustyug')">
+                            Предыдущий город: Великий Устюг
+                        </button>
+                        <button class="nav-btn" onclick="startQuest('penza')">Начать квест по городу</button>
+                        <button class="nav-btn" onclick="showCity('chita')">Следующий город: Чита</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chita" class="city-page">
+                <div class="city-content-page">
+                    <div class="city-header">
+                        <h1>Чита</h1>
+                    </div>
+
+                    <p>
+                        <span class="highlight">Чита</span> — административный центр Забайкальского края, город с
+                        богатой историей и культурным наследием. В 2021 году ему было присвоено звание «Город трудовой
+                        доблести».
+                    </p>
+                    <h2>Герб города</h2>
+                    <img src="images/%D0%93%D0%B5%D1%80%D0%B1%20%D0%A7%D0%B8%D1%82%D1%8B.png" width="500" />
+
+                    <h2>История</h2>
+                    <ul>
+                        <li>
+                            Основание Читы связывают с именем Петра Бекетова, который в 1653 году заложил на берегу реки
+                            Читы Государево Ингодинское зимовье. Первое постоянное поселение появилось после 1675 года.
+                            В 1701 году Читинская слобода впервые упоминается в «Ведомости сибирских городов». В 1827
+                            году сюда были сосланы декабристы, что оказало значительное влияние на развитие города.
+                        </li>
+                        <li>
+                            Статус города Чита получила в 1851 году, когда стала центром Забайкальской области.
+                            Настоящий расцвет начался в конце XIX века после строительства Транссибирской магистрали:
+                            город превратился в важный транспортный узел и промышленный центр. В 1900 году через Читу
+                            прошла железная дорога, и она стала крупнейшим транспортным узлом Забайкалья.
+                        </li>
+                        <li>
+                            В период с 1920 по 1922 год Чита была столицей Дальневосточной республики, а с 1937 года —
+                            центром Читинской области. С 2008 года — административный центр Забайкальского края.
+                        </li>
+                    </ul>
+
+                    <h2>Достопримечательности</h2>
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%A6%D0%B5%D1%80%D0%BA%D0%BE%D0%B2%D1%8C%20%D0%B4%D0%B5%D0%BA%D0%B0%D0%B1%D1%80%D0%B8%D1%81%D1%82%D0%BE%D0%B2%20(%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D0%BE-%D0%90%D1%80%D1%85%D0%B0%D0%BD%D0%B3%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F%20%D1%86%D0%B5%D1%80%D0%BA%D0%BE%D0%B2%D1%8C).jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Церковь декабристов (Михайло-Архангельская церковь)</strong> — самое старое
+                            сохранившееся здание в городе, построено в 1776 году. В 1827–1830 годах сюда ходили на
+                            службы сосланные декабристы. В здании церкви работает музей, где хранятся письма, книги,
+                            оружие и другие вещи революционеров.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9A%D0%B0%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BA%D0%B0%D1%84%D0%B5%D0%B4%D1%80%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%D1%81%D0%BE%D0%B1%D0%BE%D1%80.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Казанский кафедральный собор</strong> — визитная карточка города, один из самых
+                            больших соборов в Сибири и на Дальнем Востоке. Построен в старинном русском стиле, внутри
+                            находятся известные святыни, включая мощи Варлаама Чикойского.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%A2%D0%B8%D1%82%D0%BE%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%20%D1%81%D0%BE%D0%BF%D0%BA%D0%B0.JPG"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Титовская сопка</strong> — потухший вулкан, геологический и археологический
+                            памятник. На скалах сохранились рисунки от эпохи бронзы до средневековья, на склонах
+                            обнаружены следы древних поселений и захоронения с предметами из золота и серебра. На сопке
+                            снималась сцена из фильма «Даурия».
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%A8%D1%83%D0%BC%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9%20%D0%B4%D0%B2%D0%BE%D1%80%D0%B5%D1%86.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Шумовский дворец</strong> — роскошный особняк в стиле сибирского модерна,
+                            построенный в начале XX века по заказу купцов Шумовых, разбогатевших на добыче золота. Это
+                            единственный в Чите купеческий дворец, переживший революцию. Внутри сохранились дубовые
+                            паркеты и мраморные камины.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%A7%D0%B8%D1%82%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%B4%D0%B0%D1%86%D0%B0%D0%BD%20%C2%AB%D0%94%D0%B0%D0%BC%D0%B1%D0%B0%20%D0%91%D1%80%D0%B0%D0%B9%D0%B1%D1%83%D0%BD%D0%BB%D0%B8%D0%BD%D0%B3%C2%BB.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Читинский дацан «Дамба Брайбунлинг»</strong> — действующий буддийский храм, открытый
+                            для туристов. Здесь можно посетить утренние службы, покрутить молитвенные барабаны и узнать
+                            о традиции забайкальских бурят.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9F%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C%20%D0%9B%D0%B5%D0%BD%D0%B8%D0%BD%D0%B0.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Площадь Ленина</strong> — центральная площадь города, где проводятся праздничные
+                            концерты, выставки и фестивали. В четырёх углах площади расположены колонны с табличками, на
+                            которых отмечены значимые события региона.
+                        </p>
+                    </div>
+
+                    <div class="image-container">
+                        <img
+                            src="images/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE%20%D0%9A%D0%B5%D0%BD%D0%BE%D0%BD.jpg"
+                            width="500" />
+                        <p class="image-caption">
+                            <strong>Озеро Кенон</strong> — популярное место для отдыха. Летом здесь купаются, зимой
+                            катаются на коньках, а в любое время года рыбачат.
+                        </p>
+                    </div>
+
+                    <h2>Музеи</h2>
+                    <ul>
+                        <li>
+                            <strong>Краеведческий музей имени А. К. Кузнецова</strong> — один из старейших музеев Сибири
+                            и Дальнего Востока. В коллекции — окаменелости динозавров, мумии древних воинов, золотые
+                            слитки и вещи декабристов. Адрес: ул. Бабушкина, 113.
+                            <p>Больше узнать о музее можно <a href="https://museums75.ru/" target="_blank">здесь</a></p>
+                        </li>
+                        <li>
+                            <strong>Музей декабристов</strong> — филиал краеведческого музея, расположен в здании
+                            церкви. Экспозиция посвящена истории декабристов в Чите. Адрес: ул. Декабристов, 3Б.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://museums75.ru/decembrists-museum" target="_blank">здесь</a>
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Забайкальский краевой художественный музей</strong> — музей изобразительного
+                            искусства с коллекцией работ местных и сибирских мастеров. Адрес: ул. Чкалова, 120А.
+                            <p>Больше узнать о музее можно <a href="https://mvcchita.ru/" target="_blank">здесь</a></p>
+                        </li>
+                        <li>
+                            <strong>Военно-исторический музей Забайкальского края</strong> — экспозиция, посвящённая
+                            военной истории региона. Адрес: ул. Ленина, 88.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://domoficerov.com/Muzej.html" target="_blank">здесь</a>
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Музей археологии Забайкалья</strong> — коллекция археологических находок, включая
+                            реконструкции лиц первых жителей края по найденным черепам. Адрес: ул. Чкалова, 140.
+                            <p>
+                                Больше узнать о музее можно
+                                <a href="https://visit-zabaikal.ru/arheologiya" target="_blank">здесь</a>
+                            </p>
+                        </li>
+                    </ul>
+
+                    <div class="navigation">
+                        <button class="nav-btn" onclick="showMain()">На главную</button>
+                        <button class="nav-btn" onclick="showCity('penza')">Предыдущий город: Пенза</button>
+                        <button class="nav-btn" onclick="startQuest('chita')">Начать квест по городу</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quest-page">
+                <div class="back-to-main">
+                    <button class="nav-btn" onclick="backToMainFromQuest()">
+                        <i class="fas fa-arrow-left"></i> Вернуться к выбору города
+                    </button>
+                </div>
+
+                <div class="quest-header">
+                    <h1>Образовательный квест по городам России</h1>
+                    <p>Изучайте историю и культуру российских городов через интерактивные вопросы</p>
+                </div>
+
+                <div class="city-selector">
+                    <button class="city-btn active" data-city="ustyug">Великий Устюг</button>
+                    <button class="city-btn" data-city="penza">Пенза</button>
+                    <button class="city-btn" data-city="chita">Чита</button>
+                </div>
+
+                <div class="city-description active" id="desc-ustyug">
+                    <h3>О Великом Устюге</h3>
+                    <p>
+                        Великий Устюг — древний город на Русском Севере, основанный в 1147 году. Расположен в
+                        Вологодской области на слиянии рек Сухоны и Юга. Известен как родина Деда Мороза и центр
+                        уникального промысла «северная чернь».
+                    </p>
+                </div>
+
+                <div class="city-description" id="desc-penza">
+                    <h3>О Пензе</h3>
+                    <p>
+                        Пенза — город в европейской части России, основанный в 1663 году как крепость. Административный
+                        центр Пензенской области, расположенный на реке Суре. Известен как культурная столица Поволжья с
+                        богатыми театральными и музейными традициями.
+                    </p>
+                </div>
+
+                <div class="city-description" id="desc-chita">
+                    <h3>О Чите</h3>
+                    <p>
+                        Чита — город в Восточной Сибири, основанный в 1653 году. Административный центр Забайкальского
+                        края, расположенный на слиянии рек Читы и Ингоды. Известен как место ссылки декабристов и «город
+                        на семи холмах».
+                    </p>
+                </div>
+
+                <div class="quest-start" id="quest-start">
+                    <h2>Готовы начать квест?</h2>
+                    <p>
+                        Проверьте свои знания об истории, культуре и достопримечательностях выбранного города. Вас ждут
+                        10 интересных вопросов с подробными объяснениями.
+                    </p>
+                    <button class="start-quest-btn quest-button" id="start-quest">Начать квест</button>
+                </div>
+
+                <div class="quest-info" id="quest-info" style="display: none">
+                    <div class="info-item">
+                        <div><span>10 вопросов</span></div>
+                    </div>
+                    <div class="info-item">
+                        <div><span id="city-region">Вологодская область</span></div>
+                    </div>
+                    <div class="info-item">
+                        <div><span>История и культура</span></div>
+                    </div>
+                </div>
+
+                <div class="progress-bar" id="progress-container" style="display: none">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <div class="question-container city-questions" id="ustyug-questions">
+                    <div class="question-container" id="ustyug-q1">
+                        <div class="question">
+                            <h2><span class="question-number">1</span>В каком веке был основан Великий Устюг?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="true">XII веке</div>
+                                <div class="option" data-correct="false">X веке</div>
+                                <div class="option" data-correct="false">XIV веке</div>
+                                <div class="option" data-correct="false">XVI веке</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Великий Устюг был основан в 1147 году, то есть в том
+                                же году, что и Москва.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button" disabled><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q2">
+                        <div class="question">
+                            <h2><span class="question-number">2</span>Какая река не протекает через Великий Устюг?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Сухона</div>
+                                <div class="option" data-correct="true">Волга</div>
+                                <div class="option" data-correct="false">Юг</div>
+                                <div class="option" data-correct="false">Малая Северная Двина</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Великий Устюг расположен на слиянии рек Сухоны и Юга,
+                                которые образуют Малую Северную Двину. Волга же протекает значительно южнее.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q3">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">3</span>Какой известный русский землепроходец родился в
+                                Великом Устюге?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Ермак Тимофеевич</div>
+                                <div class="option" data-correct="true">Семён Дежнёв</div>
+                                <div class="option" data-correct="false">Витус Беринг</div>
+                                <div class="option" data-correct="false">Иван Крузенштерн</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Семён Дежнёв (1605-1673) - устюжанин, который в 1648
+                                году открыл пролив между Азией и Америкой за 80 лет до Витуса Беринга.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q4">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">4</span>С какого года Великий Устюг считается родиной Деда
+                                Мороза?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">1995</div>
+                                <div class="option" data-correct="false">2000</div>
+                                <div class="option" data-correct="true">1999</div>
+                                <div class="option" data-correct="false">2005</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> С 1999 года Великий Устюг является официальной
+                                резиденцией Деда Мороза. Сюда приходят тысячи писем от детей со всей России.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q5">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">5</span>Какое из этих прозвищ НЕ относится к Великому
+                                Устюгу?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Город купцов</div>
+                                <div class="option" data-correct="false">Серебряное ожерелье России</div>
+                                <div class="option" data-correct="false">Ворота на Север</div>
+                                <div class="option" data-correct="true">Северная Венеция</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> "Северной Венецией" часто называют Санкт-Петербург
+                                из-за его многочисленных каналов и рек. Великий Устюг же известен как "Город купцов" и
+                                "Ворота на Север".
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q6">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">6</span>Какой знаменитый храмовый комплекс находится в
+                                Великом Устюге?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="true">Соборное дворище</div>
+                                <div class="option" data-correct="false">Кремль</div>
+                                <div class="option" data-correct="false">Монастырь Святого Георгия</div>
+                                <div class="option" data-correct="false">Храм Василия Блаженного</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Соборное дворище - архитектурный ансамбль в центре
+                                Великого Устюга, включающий Успенский собор (XVII век), собор Прокопия Праведного и
+                                другие памятники.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q7">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">7</span>Какой промысел прославил Великий Устюг на всю
+                                Россию?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Гончарное дело</div>
+                                <div class="option" data-correct="false">Кружевоплетение</div>
+                                <div class="option" data-correct="true">Северная чернь</div>
+                                <div class="option" data-correct="false">Резьба по кости</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> "Северная чернь" - уникальная техника чернения по
+                                серебру, которая зародилась в Великом Устюге в XVII веке и принесла городу всероссийскую
+                                славу.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q8">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">8</span>Какой из этих городов является "собратом" Великого
+                                Устюга по программе "Золотое кольцо Севера"?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Ярославль</div>
+                                <div class="option" data-correct="false">Кострома</div>
+                                <div class="option" data-correct="true">Вологда</div>
+                                <div class="option" data-correct="false">Псков</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> "Золотое кольцо Севера" - туристический маршрут по
+                                древним городам Русского Севера, включающий Великий Устюг, Вологду, Тотьму, Каргополь и
+                                другие.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q9">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">9</span>Какое историческое событие произошло в Великом
+                                Устюге в 1212 году?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Город был сожжён монголами</div>
+                                <div class="option" data-correct="true">Основан Михайло-Архангельский монастырь</div>
+                                <div class="option" data-correct="false">Город получил Магдебургское право</div>
+                                <div class="option" data-correct="false">Заложен первый каменный храм</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Михайло-Архангельский монастырь, основанный в 1212
+                                году, является одним из древнейших монастырей на Русском Севере.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="ustyug-q10">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">10</span>Какой знаменитый праздник ежегодно проводится в
+                                Великом Устюге?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Праздник огурца</div>
+                                <div class="option" data-correct="false">День Нептуна</div>
+                                <div class="option" data-correct="true">День рождения Деда Мороза</div>
+                                <div class="option" data-correct="false">Фестиваль воздухоплавания</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> День рождения Деда Мороза празднуется 18 ноября. В
+                                этот день в Великий Устюг приезжают гости со всей России, а сам Дед Мороз получает
+                                тысячи поздравлений.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button finish-btn">
+                                Завершить квест <i class="fas fa-flag-checkered"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-container city-questions" id="penza-questions" style="display: none">
+                    <div class="question-container" id="penza-q1">
+                        <div class="question">
+                            <h2><span class="question-number">1</span>В каком году была основана Пенза?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">1550 году</div>
+                                <div class="option" data-correct="false">1703 году</div>
+                                <div class="option" data-correct="true">1663 году</div>
+                                <div class="option" data-correct="false">1777 году</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Пенза была основана в 1663 году как крепость на
+                                юго-восточной окраине Русского царства для защиты от набегов кочевников.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button" disabled><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q2">
+                        <div class="question">
+                            <h2><span class="question-number">2</span>На какой реке расположена Пенза?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Волга</div>
+                                <div class="option" data-correct="false">Ока</div>
+                                <div class="option" data-correct="true">Сура</div>
+                                <div class="option" data-correct="false">Дон</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Пенза расположена на реке Суре, которая является
+                                правым притоком Волги. Длина Суры составляет 841 км.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q3">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">3</span>Какой известный русский писатель родился в
+                                Пензенской губернии?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Фёдор Достоевский</div>
+                                <div class="option" data-correct="true">Михаил Лермонтов</div>
+                                <div class="option" data-correct="false">Антон Чехов</div>
+                                <div class="option" data-correct="false">Иван Тургенев</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Михаил Юрьевич Лермонтов родился в 1814 году в Москве,
+                                но его детство прошло в имении Тарханы Пензенской губернии.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q4">
+                        <div class="question">
+                            <h2><span class="question-number">4</span>Какое прозвище имеет Пенза?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Город на семи холмах</div>
+                                <div class="option" data-correct="false">Северная столица</div>
+                                <div class="option" data-correct="true">Город на Суре</div>
+                                <div class="option" data-correct="false">Южные ворота России</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Пензу часто называют "Городом на Суре" из-за её
+                                расположения на берегах этой реки.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q5">
+                        <div class="question">
+                            <h2><span class="question-number">5</span>Какой известный театр находится в Пензе?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Большой театр</div>
+                                <div class="option" data-correct="true">Пензенский драматический театр</div>
+                                <div class="option" data-correct="false">Мариинский театр</div>
+                                <div class="option" data-correct="false">Театр на Таганке</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Пензенский областной драматический театр имени А.В.
+                                Луначарского был основан в 1793 году и является одним из старейших театров России.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q6">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">6</span>Какое учреждение культуры, основанное в 1905 году,
+                                является старейшим музеем Пензы?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Музей изобразительных искусств</div>
+                                <div class="option" data-correct="true">Пензенский краеведческий музей</div>
+                                <div class="option" data-correct="false">Музей одной картины</div>
+                                <div class="option" data-correct="false">Литературный музей</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Пензенский государственный краеведческий музей был
+                                основан в 1905 году.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q7">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">7</span>Какой известный русский критик и публицист родился
+                                в Пензе?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="true">Виссарион Белинский</div>
+                                <div class="option" data-correct="false">Николай Добролюбов</div>
+                                <div class="option" data-correct="false">Николай Чернышевский</div>
+                                <div class="option" data-correct="false">Александр Герцен</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Виссарион Григорьевич Белинский, известный русский
+                                литературный критик, родился в 1811 году в городе Чембаре Пензенской губернии.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q8">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">8</span>Какое уникальное культурное учреждение,
+                                единственное в России, находится в Пензе?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Музей космонавтики</div>
+                                <div class="option" data-correct="true">Музей одной картины</div>
+                                <div class="option" data-correct="false">Музей шоколада</div>
+                                <div class="option" data-correct="false">Музей воды</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Музей одной картины имени Г.В. Мясникова был открыт в
+                                Пензе в 1983 году.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q9">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">9</span>Какой известный памятник архитектуры XIX века
+                                находится в Пензе?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Пензенский кремль</div>
+                                <div class="option" data-correct="true">Успенский кафедральный собор</div>
+                                <div class="option" data-correct="false">Дворец царя Алексея Михайловича</div>
+                                <div class="option" data-correct="false">Петропавловская крепость</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Успенский кафедральный собор в Пензе был построен в
+                                1905 году в русско-византийском стиле.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="penza-q10">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">10</span>Какое высшее учебное заведение, основанное в 1943
+                                году, находится в Пензе?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Пензенский технический институт</div>
+                                <div class="option" data-correct="true">Пензенский государственный университет</div>
+                                <div class="option" data-correct="false">Пензенский медицинский университет</div>
+                                <div class="option" data-correct="false">Пензенский педагогический институт</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Пензенский государственный университет был основан в
+                                1943 году как Пензенский индустриальный институт.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button finish-btn">
+                                Завершить квест <i class="fas fa-flag-checkered"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-container city-questions" id="chita-questions" style="display: none">
+                    <div class="question-container" id="chita-q1">
+                        <div class="question">
+                            <h2><span class="question-number">1</span>В каком году была основана Чита?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">1703 году</div>
+                                <div class="option" data-correct="false">1778 году</div>
+                                <div class="option" data-correct="true">1653 году</div>
+                                <div class="option" data-correct="false">1600 году</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Чита была основана как Ингодинское зимовье казаком
+                                Петром Бекетовым в 1653 году, что делает город одним из старейших в Забайкалье.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button" disabled><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q2">
+                        <div class="question">
+                            <h2><span class="question-number">2</span>На слиянии каких рек расположена Чита?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Енисей и Ангара</div>
+                                <div class="option" data-correct="true">Чита и Ингода</div>
+                                <div class="option" data-correct="false">Лена и Витим</div>
+                                <div class="option" data-correct="false">Амур и Шилка</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Чита расположена у подножия сопок, на берегах реки
+                                Читы при её впадении в реку Ингоду.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q3">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">3</span>Какое историческое событие связано с Читой в XIX
+                                веке?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="true">Место ссылки декабристов</div>
+                                <div class="option" data-correct="false">Основание Транссибирской магистрали</div>
+                                <div class="option" data-correct="false">Подписание Нерчинского договора</div>
+                                <div class="option" data-correct="false">Место проведения Ялтинской конференции</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> После восстания декабристов в 1825 году многие
+                                участники были сосланы в Сибирь, в том числе в Читу.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q4">
+                        <div class="question">
+                            <h2><span class="question-number">4</span>Какое прозвище есть у города Читы?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Столица Сибири</div>
+                                <div class="option" data-correct="false">Ворота Востока</div>
+                                <div class="option" data-correct="true">Город на семи холмах</div>
+                                <div class="option" data-correct="false">Жемчужина Забайкалья</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Читу часто называют "городом на семи холмах" из-за её
+                                расположения в котловине, окруженной сопками.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q5">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">5</span>Какой известный храм является архитектурным
+                                символом Читы?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Спасо-Преображенский собор</div>
+                                <div class="option" data-correct="false">Храм Христа Спасителя</div>
+                                <div class="option" data-correct="true">Казанский кафедральный собор</div>
+                                <div class="option" data-correct="false">Церковь Покрова на Нерли</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Казанский кафедральный собор в Чите - самый крупный
+                                храм в Забайкальском крае, построенный в 2001-2004 годах.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q6">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">6</span>Какое учреждение культуры, основанное в 1894 году,
+                                является старейшим в Чите?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Читинский цирк</div>
+                                <div class="option" data-correct="false">Театр кукол</div>
+                                <div class="option" data-correct="true">Краеведческий музей</div>
+                                <div class="option" data-correct="false">Филармония</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Забайкальский краеведческий музей имени А.К. Кузнецова
+                                был основан в 1894 году и является одним из старейших музеев в Сибири.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q7">
+                        <div class="question">
+                            <h2><span class="question-number">7</span>Какой известный писатель родился в Чите?</h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Александр Солженицын</div>
+                                <div class="option" data-correct="false">Виктор Астафьев</div>
+                                <div class="option" data-correct="true">Константин Седых</div>
+                                <div class="option" data-correct="false">Валентин Распутин</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Константин Седых (1908-1979) - русский советский
+                                писатель, автор исторического романа "Даурия" о жизни забайкальского казачества.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q8">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">8</span>Какое уникальное природное явление можно наблюдать
+                                в окрестностях Читы?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Гейзеры</div>
+                                <div class="option" data-correct="true">Ледяные пещеры</div>
+                                <div class="option" data-correct="false">Вулканы</div>
+                                <div class="option" data-correct="false">Песчаные дюны</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> В 20 км от Читы находится уникальный природный объект
+                                - Чикойские ледяные пещеры.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q9">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">9</span>Какой вид транспорта появился в Чите первым в
+                                Забайкалье?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Трамвай</div>
+                                <div class="option" data-correct="true">Железная дорога</div>
+                                <div class="option" data-correct="false">Автобус</div>
+                                <div class="option" data-correct="false">Троллейбус</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> Железная дорога пришла в Читу в 1900 году с открытием
+                                Забайкальской железной дороги как части Транссибирской магистрали.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button next-btn">Далее <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="question-container" id="chita-q10">
+                        <div class="question">
+                            <h2>
+                                <span class="question-number">10</span>Какое современное административное значение имеет
+                                Чита?
+                            </h2>
+                            <div class="options">
+                                <div class="option" data-correct="false">Столица Сибирского федерального округа</div>
+                                <div class="option" data-correct="false">Центр Иркутской области</div>
+                                <div class="option" data-correct="true">Административный центр Забайкальского края</div>
+                                <div class="option" data-correct="false">Город областного подчинения</div>
+                            </div>
+                            <div class="feedback"></div>
+                            <div class="fact">
+                                <strong>Интересный факт:</strong> С 1 марта 2008 года Чита является административным
+                                центром Забайкальского края.
+                            </div>
+                        </div>
+
+                        <div class="quest-navigation">
+                            <button class="quest-button prev-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                            <button class="quest-button finish-btn">
+                                Завершить квест <i class="fas fa-flag-checkered"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-container" id="result">
+                    <div class="result-icon"></div>
+                    <h2 class="result-title">Квест завершен!</h2>
+                    <div class="result-score" id="score">0/10</div>
+                    <p class="result-message" id="result-message"></p>
+                    <button class="restart-btn quest-button" id="restart">
+                        <i class="fas fa-redo"></i> Пройти другой квест
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const cities = {
+                ustyug: {
+                    name: "Великий Устюг",
+                    region: "Вологодская область",
+                    description:
+                        "Великий Устюг — древний город на Русском Севере, основанный в 1147 году. Расположен в Вологодской области на слиянии рек Сухоны и Юга. Известен как родина Деда Мороза и центр уникального промысла «северная чернь».",
+                    icon: "fa-snowflake"
+                },
+                penza: {
+                    name: "Пенза",
+                    region: "Пензенская область",
+                    description:
+                        "Пенза — город в европейской части России, основанный в 1663 году как крепость. Административный центр Пензенской области, расположенный на реке Суре. Известен как культурная столица Поволжья с богатыми театральными и музейными традициями.",
+                    icon: "fa-university"
+                },
+                chita: {
+                    name: "Чита",
+                    region: "Забайкальский край",
+                    description:
+                        "Чита — город в Восточной Сибири, основанный в 1653 году. Административный центр Забайкальского края, расположенный на слиянии рек Читы и Ингоды. Известен как место ссылки декабристов и «город на семи холмах».",
+                    icon: "fa-mountain"
+                }
+            };
+
+            let currentCity = "ustyug";
+            let currentQuestion = 1;
+            let score = 0;
+            const totalQuestions = 10;
+
+            const cityBtns = document.querySelectorAll(".city-btn");
+            const cityDescriptions = document.querySelectorAll(".city-description");
+            const questStart = document.getElementById("quest-start");
+            const questInfo = document.getElementById("quest-info");
+            const cityRegion = document.getElementById("city-region");
+            const progressContainer = document.getElementById("progress-container");
+            const progressBar = document.getElementById("progress");
+            const scoreElement = document.getElementById("score");
+            const resultMessage = document.getElementById("result-message");
+            const resultContainer = document.getElementById("result");
+            const startBtn = document.getElementById("start-quest");
+            const restartBtn = document.getElementById("restart");
+            const questPage = document.getElementById("quest-page");
+            const mainPage = document.getElementById("main-page");
+
+            function showMain() {
+                const pages = document.querySelectorAll(".city-page");
+                pages.forEach((page) => {
+                    page.classList.remove("active");
+                });
+
+                document.getElementById("main-page").classList.add("active");
+                questPage.classList.remove("active");
+
+                window.scrollTo(0, 0);
+            }
+
+            function showCity(cityId) {
+                const pages = document.querySelectorAll(".city-page");
+                pages.forEach((page) => {
+                    page.classList.remove("active");
+                });
+
+                document.getElementById(cityId).classList.add("active");
+                questPage.classList.remove("active");
+
+                window.scrollTo(0, 0);
+            }
+
+            function startQuestFromMain() {
+                const pages = document.querySelectorAll(".city-page");
+                pages.forEach((page) => {
+                    page.classList.remove("active");
+                });
+
+                questPage.classList.add("active");
+                initQuest();
+                window.scrollTo(0, 0);
+            }
+
+            function startQuest(city) {
+                const pages = document.querySelectorAll(".city-page");
+                pages.forEach((page) => {
+                    page.classList.remove("active");
+                });
+
+                questPage.classList.add("active");
+                initQuest();
+
+                cityBtns.forEach((btn) => btn.classList.remove("active"));
+                document.querySelector(`.city-btn[data-city="${city}"]`).classList.add("active");
+                currentCity = city;
+                cityRegion.textContent = cities[city].region;
+
+                cityDescriptions.forEach((desc) => desc.classList.remove("active"));
+                document.getElementById(`desc-${city}`).classList.add("active");
+
+                switchCityQuestions(city);
+
+                window.scrollTo(0, 0);
+            }
+
+            function backToMainFromQuest() {
+                showMain();
+            }
+
+            function initQuest() {
+                setupCitySelector();
+                setupOptionListeners();
+                setupNavigation();
+                setupButtons();
+
+                showStartScreen();
+            }
+
+            function setupCitySelector() {
+                cityBtns.forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const city = this.dataset.city;
+
+                        cityBtns.forEach((b) => b.classList.remove("active"));
+                        this.classList.add("active");
+
+                        cityDescriptions.forEach((desc) => desc.classList.remove("active"));
+                        document.getElementById(`desc-${city}`).classList.add("active");
+
+                        currentCity = city;
+                        cityRegion.textContent = cities[city].region;
+
+                        if (questStart.style.display === "none") {
+                            switchCityQuestions(city);
+                        }
+                    });
+                });
+            }
+
+            function switchCityQuestions(city) {
+                document.querySelectorAll(".city-questions").forEach((q) => {
+                    q.style.display = "none";
+                });
+
+                document.getElementById(`${city}-questions`).style.display = "block";
+
+                resetQuest();
+                showQuestion(1);
+            }
+
+            function setupOptionListeners() {
+                document.addEventListener("click", function (e) {
+                    if (e.target.classList.contains("option")) {
+                        handleOptionClick(e.target);
+                    }
+                });
+            }
+
+            function handleOptionClick(option) {
+                if (option.classList.contains("correct") || option.classList.contains("incorrect")) {
+                    return;
+                }
+
+                const isCorrect = option.getAttribute("data-correct") === "true";
+                const questionContainer = option.closest(".question-container");
+                const feedback = questionContainer.querySelector(".feedback");
+                const fact = questionContainer.querySelector(".fact");
+
+                if (isCorrect) {
+                    option.classList.add("correct");
+                    score++;
+                    feedback.textContent = "Верно! Отличный ответ!";
+                    feedback.classList.add("correct");
+                } else {
+                    option.classList.add("incorrect");
+                    feedback.textContent = "Неверно. Попробуйте еще раз или перейдите к следующему вопросу.";
+                    feedback.classList.add("incorrect");
+
+                    const correctOption = questionContainer.querySelector('.option[data-correct="true"]');
+                    correctOption.classList.add("correct");
+                }
+
+                feedback.style.display = "block";
+                fact.classList.add("show");
+            }
+
+            function setupNavigation() {
+                document.addEventListener("click", function (e) {
+                    if (e.target.classList.contains("next-btn") || e.target.closest(".next-btn")) {
+                        const btn = e.target.classList.contains("next-btn") ? e.target : e.target.closest(".next-btn");
+                        handleNextButton();
+                    }
+
+                    if (e.target.classList.contains("prev-btn") || e.target.closest(".prev-btn")) {
+                        const btn = e.target.classList.contains("prev-btn") ? e.target : e.target.closest(".prev-btn");
+                        handlePrevButton();
+                    }
+
+                    if (e.target.classList.contains("finish-btn") || e.target.closest(".finish-btn")) {
+                        showResults();
+                    }
+                });
+            }
+
+            function handleNextButton() {
+                if (currentQuestion < totalQuestions) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                }
+            }
+
+            function handlePrevButton() {
+                if (currentQuestion > 1) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            }
+
+            function showQuestion(questionNumber) {
+                const cityQuestions = document.getElementById(`${currentCity}-questions`);
+                const questions = cityQuestions.querySelectorAll(".question-container");
+
+                questions.forEach((q) => {
+                    q.classList.remove("active");
+                });
+
+                const questionId = `${currentCity}-q${questionNumber}`;
+                document.getElementById(questionId).classList.add("active");
+
+                updateProgress();
+
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            function updateProgress() {
+                const progress = (currentQuestion / totalQuestions) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function setupButtons() {
+                startBtn.addEventListener("click", startQuestFromStartScreen);
+                restartBtn.addEventListener("click", restartQuest);
+            }
+
+            function startQuestFromStartScreen() {
+                questStart.style.display = "none";
+
+                questInfo.style.display = "flex";
+                progressContainer.style.display = "block";
+
+                showQuestion(1);
+
+                cityRegion.textContent = cities[currentCity].region;
+            }
+
+            function showStartScreen() {
+                document.querySelectorAll(".city-questions").forEach((q) => {
+                    q.style.display = "none";
+                });
+                resultContainer.classList.remove("active");
+
+                questStart.style.display = "block";
+                questInfo.style.display = "none";
+                progressContainer.style.display = "none";
+
+                resetQuest();
+            }
+
+            function resetQuest() {
+                currentQuestion = 1;
+                score = 0;
+
+                document.querySelectorAll(".option").forEach((option) => {
+                    option.classList.remove("correct", "incorrect");
+                });
+
+                document.querySelectorAll(".feedback").forEach((feedback) => {
+                    feedback.classList.remove("correct", "incorrect");
+                    feedback.style.display = "none";
+                });
+
+                document.querySelectorAll(".fact").forEach((fact) => {
+                    fact.classList.remove("show");
+                });
+
+                updateProgress();
+            }
+
+            function showResults() {
+                document.getElementById(`${currentCity}-questions`).style.display = "none";
+
+                resultContainer.classList.add("active");
+
+                scoreElement.textContent = `${score}/${totalQuestions}`;
+
+                let message = "";
+                const cityName = cities[currentCity].name;
+
+                if (score === totalQuestions) {
+                    message = `Потрясающе! Вы настоящий эксперт по городу ${cityName}! Отличное знание истории и культуры.`;
+                } else if (score >= 7) {
+                    message = `Очень хорошо! Вы хорошо знакомы с историей и достопримечательностями ${cityName}.`;
+                } else if (score >= 5) {
+                    message = `Неплохо! Вы знаете основные факты о ${cityName}, но есть куда стремиться.`;
+                } else {
+                    message = `Вам стоит больше узнать о ${cityName} - этом интересном городе с богатой историей!`;
+                }
+
+                resultMessage.textContent = message;
+
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            function restartQuest() {
+                showStartScreen();
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const hash = window.location.hash.substring(1);
+                if (hash && document.getElementById(hash)) {
+                    if (hash === "quest-page") {
+                        startQuestFromMain();
+                    } else {
+                        showCity(hash);
+                    }
+                } else {
+                    showMain();
+                }
+            });
+        </script>
+    </body>
+</html>
